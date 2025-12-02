@@ -21,7 +21,7 @@ public:
 	size_t size() const noexcept { return sz; }
 	void clear() noexcept { sz = 0; }
 
-	void push(const T& t) {
+	void push(const T& in) {
 		if (sz == len) {
 			len = len * 1.5 + 10;
 			T* t = mem;
@@ -29,7 +29,7 @@ public:
 			std::copy(t, t + sz, mem);
 			delete[] t;
 		}
-		mem[sz++] = t;
+		mem[sz++] = in;
 	}
 	T& get()
 	{
