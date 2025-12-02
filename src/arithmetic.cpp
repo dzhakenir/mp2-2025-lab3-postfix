@@ -20,12 +20,32 @@ postfix::postfix(const string& s) {
 		else if (s[i] == '+')next = token(PLUS, 2);
 		else if (s[i] == '*')next = token(MUL, 3);
 		else if (s[i] == '/')next = token(DIV, 3);
+		else if (s[i] == 'x') {
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			prev = token(X, 1);
+			tokens.push(token(X, 1, M_E));
+			continue;
+		}
+		else if (s[i] == 'y') {
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			prev = token(Y, 1);
+			tokens.push(token(Y, 1, M_E));
+			continue;
+		}
+		else if (s[i] == 'z') {
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			prev = token(Z, 1);
+			tokens.push(token(Z, 1, M_E));
+			continue;
+		}
 		else if (s[i] == 'e'){
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
 			prev = token(NUMBER,1);
 			tokens.push(token(NUMBER, 1,M_E));
 			continue;
 		}
 		else if (match(s, i, "pi")) {
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
 			tokens.push(token(NUMBER, 1, M_PI));
 			prev = token(NUMBER,1);
 			i++;
@@ -76,7 +96,7 @@ postfix::postfix(const string& s) {
 			i += 4;
 		}
 		else if (s[i] >= '0' && s[i] <= '9') {
-			if (prev.type == NUMBER || prev.prior == 1 || prev.prior >= 5)throw runtime_error("invalid expression");
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
 			double res = s[i] - '0';
 			i++;
 			while (s[i] >= '0' && s[i] <= '9') {
@@ -106,7 +126,7 @@ postfix::postfix(const string& s) {
 			continue;
 		}
 		else if (s[i] == ')') {
-			if (prev.type != NUMBER && prev.prior != 1 && prev.prior <= 5 && prev.type!=RIGHT_BRACKET || brackets==0)throw runtime_error("invalid expression");
+			if (prev.type != NUMBER && prev.kind != 1 && prev.kind <= 5 && prev.type!=RIGHT_BRACKET || brackets==0)throw runtime_error("invalid expression");
 			brackets--;
 			while (t.get().type != LEFT_BRACKET)tokens.push(t.pop());
 			t.pop();
@@ -118,90 +138,118 @@ postfix::postfix(const string& s) {
 			continue;
 		}
 		else throw runtime_error("invalid expression");
-		if (next.prior == 2 && next.prior == 3 && (prev.prior >= 2 && prev.prior <= 5 || prev.prior == 0) || next.prior==4 && prev.prior!=0 || next.prior == 5 && (prev.prior == 1 || prev.prior == 5))throw runtime_error("invalid_expression");
-		while (!t.is_empty() && t.get().prior >= next.prior)tokens.push(t.pop());
+		if ((next.kind == 2 || next.kind == 3) && (prev.kind >= 2 && prev.kind <= 5 || prev.kind == 0) || next.kind==4 && prev.kind!=0 || next.kind == 5 && (prev.kind == 1 || prev.kind == 5))throw runtime_error("invalid_expression");
+		while (!t.is_empty() && t.get().kind >= next.kind)tokens.push(t.pop());
 		t.push(next);
 		prev = next;
 	}
 	while (!t.is_empty())tokens.push(t.pop());
 }
 
-double postfix::calculate() {
+double postfix::calculate(var x, var y, var z) {
 	stack<token> inv;
 	stack<double> res;
+	double a, b;
 	while (!tokens.is_empty())
 		inv.push(tokens.pop());
 	while (inv.size() > 0) {
-		token t = inv.pop();
+		const token t = inv.pop();
 		tokens.push(t);
 		if (t.type == NUMBER)res.push(t.value);
+		else if (t.type == X) {
+			if (x.given)res.push(x.val);
+			else {
+				cout << "x=";
+				cin >> x.val;
+				x.given = true;
+				res.push(x.val);
+			}
+		}
+		else if (t.type == Y) {
+			if (y.given)res.push(y.val);
+			else {
+				cout << "y=";
+				cin >> y.val;
+				y.given = true;
+				res.push(y.val);
+			}
+		}
+		else if (t.type == Z) {
+			if (z.given)res.push(z.val);
+			else {
+				cout << "z=";
+				cin >> z.val;
+				z.given = true;
+				res.push(z.val);
+			}
+		}
 		else if (t.type == PLUS) {
-			double a = res.pop();
-			double b = res.pop();
+			a = res.pop();
+			b = res.pop();
 			res.push(a + b);
 		}
 		else if (t.type == MINUS) {
-			double a = res.pop();
-			double b = res.pop();
+			a = res.pop();
+			b = res.pop();
 			res.push(b - a);
 		}
 		else if (t.type == MUL) {
-			double a = res.pop();
-			double b = res.pop();
+			a = res.pop();
+			b = res.pop();
 			res.push(a * b);
 		}
 		else if (t.type == DIV) {
-			double a = res.pop();
-			double b = res.pop();
+			a = res.pop();
+			b = res.pop();
 			res.push(b / a);
 		}
 		else if (t.type == POW) {
-			double a = res.pop();
-			double b = res.pop();
+			a = res.pop();
+			b = res.pop();
 			res.push(pow(b, a));
 		}
 		else if (t.type == SIN) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(sin(a));
 		}
 		else if (t.type == COS) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(cos(a));
 		}
 		else if (t.type == TAN) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(tan(a));
 		}
 		else if (t.type == SQRT) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(sqrt(a));
 		}
 		else if (t.type == ASIN) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(asin(a));
 		}
 		else if (t.type == ACOS) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(acos(a));
 		}
 		else if (t.type == ATAN) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(atan(a));
 		}
 		else if (t.type == UNARY_MINUS) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(-a);
 		}
 		else if (t.type == LN) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(log(a));
 		}
 		else if (t.type == LOG2) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(log2(a));
 		}
 		else if (t.type == LOG10) {
-			double a = res.pop();
+			a = res.pop();
 			res.push(log10(a));
 		}
 	}
