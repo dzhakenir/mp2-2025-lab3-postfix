@@ -21,31 +21,31 @@ postfix::postfix(const string& s) {
 		else if (s[i] == '*')next = token(MUL, 3);
 		else if (s[i] == '/')next = token(DIV, 3);
 		else if (s[i] == 'x') {
-			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind == 5)throw i;
 			prev = token(X, 1);
 			tokens.push(token(X, 1, M_E));
 			continue;
 		}
 		else if (s[i] == 'y') {
-			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind == 5)throw i;
 			prev = token(Y, 1);
 			tokens.push(token(Y, 1, M_E));
 			continue;
 		}
 		else if (s[i] == 'z') {
-			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind == 5)throw i;
 			prev = token(Z, 1);
 			tokens.push(token(Z, 1, M_E));
 			continue;
 		}
 		else if (s[i] == 'e'){
-			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind == 5)throw i;
 			prev = token(NUMBER,1);
 			tokens.push(token(NUMBER, 1,M_E));
 			continue;
 		}
 		else if (match(s, i, "pi")) {
-			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind == 5)throw i;
 			tokens.push(token(NUMBER, 1, M_PI));
 			prev = token(NUMBER,1);
 			i++;
@@ -96,7 +96,7 @@ postfix::postfix(const string& s) {
 			i += 4;
 		}
 		else if (s[i] >= '0' && s[i] <= '9') {
-			if (prev.type == NUMBER || prev.kind == 1 || prev.kind >= 5)throw runtime_error("invalid expression");
+			if (prev.type == NUMBER || prev.kind == 1 || prev.kind == 5)throw i;
 			double res = s[i] - '0';
 			i++;
 			while (s[i] >= '0' && s[i] <= '9') {
@@ -120,25 +120,26 @@ postfix::postfix(const string& s) {
 		}
 		else if (s[i] == ' ')continue;
 		else if (s[i] == '(') {
+			if (prev.kind == 1)throw i;
 			t.push(LEFT_BRACKET);
 			prev = token(LEFT_BRACKET);
 			brackets++;
 			continue;
 		}
 		else if (s[i] == ')') {
-			if (prev.type != NUMBER && prev.kind != 1 && prev.kind <= 5 && prev.type!=RIGHT_BRACKET || brackets==0)throw runtime_error("invalid expression");
+			if (prev.type != NUMBER && prev.kind != 1 || brackets==0)throw i;
 			brackets--;
 			while (t.get().type != LEFT_BRACKET)tokens.push(t.pop());
 			t.pop();
 			prev = token(RIGHT_BRACKET,1);
 			continue;
-		}
+		}/*
 		else if (s[i] == ',') {
 			prev = token(COMMA);
 			continue;
-		}
-		else throw runtime_error("invalid expression");
-		if ((next.kind == 2 || next.kind == 3) && (prev.kind >= 2 && prev.kind <= 5 || prev.kind == 0) || next.kind==4 && prev.kind!=0 || next.kind == 5 && (prev.kind == 1 || prev.kind == 5))throw runtime_error("invalid_expression");
+		}*/
+		else throw i;
+		if ((next.kind == 2 || next.kind == 3) && (prev.kind >= 2 && prev.kind <= 5 || prev.kind == 0) || next.kind==4 && prev.kind!=0 || next.kind == 5 && (prev.kind == 1 || prev.kind == 5))throw i;
 		while (!t.is_empty() && t.get().kind >= next.kind)tokens.push(t.pop());
 		t.push(next);
 		prev = next;
