@@ -41,20 +41,22 @@ TEST(postfix, test_11) {
 	EXPECT_EQ(postfix(s).calculate(), 1e5+1);
 }
 TEST(postfix, test_12) {
-	EXPECT_EQ(postfix("1+2").calculate(), 3);
+	EXPECT_EQ(postfix("4-3").calculate(), 1);
 }
 TEST(postfix, test_13) {
-	EXPECT_EQ(postfix("1+2").calculate(), 3);
+	double x = 12, y = 23, z = 34;
+	EXPECT_EQ(postfix("sin(y*cos(y)/5+sqrt(x*pi/e)*32)/ln(x*y-98/log2(63)+x*log10(z))").calculate(x,y,z), sin(y * cos(y) / 5 + sqrt(x * pi / e) * 32) / log(x * y - 98 / log2(63) + x * log10(z)));
 }
 TEST(postfix, test_14) {
-	EXPECT_EQ(postfix("1+2").calculate(), 3);
+	EXPECT_EQ(postfix("asin(0.5)").calculate(), asin(0.5));
 }
 TEST(postfix, test_15) {
-	EXPECT_EQ(postfix("1+2").calculate(), 3);
+	EXPECT_EQ(postfix("acos(0.5)").calculate(), acos(0.5));
 }
 TEST(postfix, test_16) {
-	EXPECT_EQ(postfix("1+2").calculate(), 3);
+	EXPECT_EQ(postfix("atan(0.5)").calculate(), atan(0.5));
 }
 TEST(postfix, test_17) {
-	EXPECT_EQ(postfix("1+2").calculate(), 3);
+	double x = 12, y = 23;
+	EXPECT_EQ(postfix("sin(y*cos(y)/5+sqrt(x*pi/e)*32)/ln(x*y-98/log2(63)+x*log10(34))").calculate(x, y), sin(y * cos(y) / 5 + sqrt(x * pi / e) * 32) / log(x * y - 98 / log2(63) + x * log10(34)));
 }
