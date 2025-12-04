@@ -60,3 +60,55 @@ TEST(postfix, test_17) {
 	double x = 12, y = 23;
 	EXPECT_EQ(postfix("sin(y*cos(y)/5+sqrt(x*pi/e)*32)/ln(x*y-98/log2(63)+x*log10(34))").calculate(x, y), sin(y * cos(y) / 5 + sqrt(x * pi / e) * 32) / log(x * y - 98 / log2(63) + x * log10(34)));
 }
+
+TEST(postfix, test_18) {
+	EXPECT_ANY_THROW(postfix("atan").calculate());
+}
+TEST(postfix, test_19) {
+	EXPECT_ANY_THROW(postfix("log(-1)").calculate());
+}
+TEST(postfix, test_20) {
+	EXPECT_ANY_THROW(postfix("log2-1").calculate());
+}
+TEST(postfix, test_21) {
+	EXPECT_ANY_THROW(postfix(")(").calculate());
+}
+TEST(postfix, test_22) {
+	EXPECT_ANY_THROW(postfix("((").calculate());
+}
+TEST(postfix, test_23) {
+	EXPECT_ANY_THROW(postfix("asdf").calculate());
+}
+TEST(postfix, test_24) {
+	EXPECT_ANY_THROW(postfix("pi*sin()").calculate());
+}
+TEST(postfix, test_25) {
+	EXPECT_ANY_THROW(postfix("(2+3)(4+5)").calculate());
+}
+TEST(postfix, test_26) {
+	EXPECT_ANY_THROW(postfix("2++2").calculate());
+}
+TEST(postfix, test_27) {
+	EXPECT_ANY_THROW(postfix("3//4").calculate());
+}
+TEST(postfix, test_28) {
+	EXPECT_ANY_THROW(postfix("3/-4").calculate());
+}
+TEST(postfix, test_29) {
+	EXPECT_ANY_THROW(postfix("2+4)").calculate());
+}
+TEST(postfix, test_30) {
+	EXPECT_ANY_THROW(postfix("").calculate());
+}
+TEST(postfix, test_31) {
+	EXPECT_ANY_THROW(postfix("xyz").calculate());
+}
+TEST(postfix, test_32) {
+	EXPECT_ANY_THROW(postfix("epi").calculate());
+}
+TEST(postfix, test_33) {
+	EXPECT_ANY_THROW(postfix("2x").calculate());
+}
+TEST(postfix, test_34) {
+	EXPECT_ANY_THROW(postfix("2e").calculate());
+}
