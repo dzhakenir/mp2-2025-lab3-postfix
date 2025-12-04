@@ -14,7 +14,7 @@ postfix::postfix(const string& s) {
 	int brackets = 0;
 	for (int i = 0; i < s.size(); i++) {
 		if (s[i] == '-') {
-			if (tokens.is_empty() || t.get().type == LEFT_BRACKET)next = token(UNARY_MINUS, 4);
+			if (tokens.is_empty() && t.is_empty() || !t.is_empty() && t.get().type == LEFT_BRACKET)next = token(UNARY_MINUS, 4);
 			else next = token(MINUS, 2);
 		}
 		else if (s[i] == '+')next = token(PLUS, 2);
