@@ -9,7 +9,7 @@ using namespace std;
 enum TokenType {
     EMPTY,
     COMMA, LEFT_BRACKET, RIGHT_BRACKET,
-    VARIABLE, NUMBER, PI, E, X, Y, Z,
+    NUMBER, PI, E, X, Y, Z,
     PLUS, MINUS, MUL, DIV, UNARY_MINUS, POW, 
     SQRT, LN, LOG2, LOG10,
     SIN, COS, TAN, ACOS, ASIN, ATAN
@@ -25,7 +25,7 @@ struct var {
 struct token {
     TokenType type;
     double value;
-    int kind;
+    int kind; //0 - пустота и левая скобка, 1 - переменные, числа, константы и правая скобка, 2 - + и -, 3 - * и /, 4 - унарный минус, 5 - функции
     token(TokenType t = EMPTY, int pr = 0, double val = 0) noexcept :type(t), value(val), kind(pr) {}
 };//У операторов value всегда равно 0, kind - приоритет операции
 
